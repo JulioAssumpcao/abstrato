@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salão Abstrato Hair — Centro de Beleza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0a0a0a;
+    --off-black: #111111;
+    --dark: #1a1a1a;
+    --charcoal: #2c2c2c;
+    --mid: #4a4a4a;
+    --gray: #7a7a7a;
+    --light-gray: #b8b8b8;
+    --silver: #d4d4d4;
+    --off-white: #f5f4f2;
+    --white: #ffffff;
+    --cream: #faf9f7;
+    --gold: #c9a96e;
+    --gold-light: #e8d5b0;
+    --transition: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+  /* NAVBAR */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 0 5%;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.5s var(--transition);
+  }
+
+  nav.scrolled {
+    background: rgba(10,10,10,0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201,169,110,0.15);
+  }
+
+  .nav-logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+
+  .nav-logo .main-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--white);
+    letter-spacing: 0.08em;
+  }
+
+  .nav-logo .sub-name {
+    font-size: 0.55rem;
+    font-weight: 400;
+    color: var(--gold);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.4s var(--transition);
+  }
+
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-cta {
+    border: 1px solid var(--gold);
+    padding: 0.55rem 1.4rem;
+    border-radius: 0;
+    color: var(--gold) !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.2em !important;
+    transition: all 0.35s var(--transition) !important;
+  }
+
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { background: var(--gold); color: var(--black) !important; }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .hamburger span {
+    width: 24px;
+    height: 1px;
+    background: var(--white);
+    transition: all 0.3s;
+    display: block;
+  }
+
+  /* MOBILE MENU */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 72px; left: 0; right: 0;
+    background: rgba(10,10,10,0.97);
+    backdrop-filter: blur(20px);
+    z-index: 999;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1.5rem;
+    border-bottom: 1px solid rgba(201,169,110,0.2);
+  }
+
+  .mobile-menu.active { display: flex; }
+
+  .mobile-menu a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: color 0.3s;
+  }
+
+  .mobile-menu a:hover { color: var(--gold); }
+
+  /* HERO */
+  #hero {
+    position: relative;
+    height: 100vh;
+    min-height: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%),
+      url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1920&q=80') center/cover no-repeat;
+    transform: scale(1.05);
+    animation: heroZoom 12s ease-out forwards;
+  }
+
+  @keyframes heroZoom {
+    to { transform: scale(1); }
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 100%);
+  }
+      /* marca d'água */
+body::before {
+  content: "GRUPO DGM";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+
+  font-size: 6rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.5em;
+
+  color: rgba(255, 255, 255, 0.541);
+
+  pointer-events: none;
+  z-index: 1; /* fica atrás de TUDO */
+}
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 900px;
+    padding: 0 2rem;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.8rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s var(--transition) forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s var(--transition) forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-subtitle {
+    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+    font-weight: 300;
+    color: var(--light-gray);
+    line-height: 1.9;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.7s var(--transition) forwards;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.9s var(--transition) forwards;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 1rem 2.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s var(--transition);
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: rgba(255,255,255,0.15);
+    transition: left 0.4s var(--transition);
+  }
+
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(201,169,110,0.35); }
+  .btn-primary:hover::before { left: 100%; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.4);
+    padding: 1rem 2.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.4s var(--transition);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeIn 1s 1.5s forwards;
+    cursor: pointer;
+  }
+
+  .hero-scroll span {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(0.7); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 5%; }
+
+  .section-eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 0.8rem;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 400;
+    color: var(--off-black);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--mid);
+  }
+
+  .section-divider {
+    width: 50px;
+    height: 1px;
+    background: var(--gold);
+    margin-bottom: 2rem;
+  }
+
+  /* SOBRE */
+  #sobre {
+    background: var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .sobre-image {
+    position: relative;
+    height: 580px;
+  }
+
+  .sobre-img-main {
+    width: 78%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80') center/cover;
+  }
+
+  .sobre-img-accent {
+    position: absolute;
+    bottom: -2rem;
+    right: 0;
+    width: 45%;
+    height: 55%;
+    background: url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&q=80') center/cover;
+    border: 6px solid var(--white);
+  }
+
+  .sobre-badge {
+    position: absolute;
+    top: 2rem;
+    right: 0;
+    background: var(--gold);
+    color: var(--black);
+    padding: 1.5rem;
+    text-align: center;
+    width: 110px;
+  }
+
+  .sobre-badge .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 500;
+    display: block;
+    line-height: 1;
+  }
+
+  .sobre-badge .label {
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .sobre-text p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--mid);
+    line-height: 1.95;
+    margin-bottom: 2.5rem;
+  }
+
+  .diferenciais {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .diferencial-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 1rem;
+    border: 1px solid rgba(201,169,110,0.2);
+    transition: all 0.3s var(--transition);
+  }
+
+  .diferencial-item:hover {
+    border-color: var(--gold);
+    background: rgba(201,169,110,0.04);
+  }
+
+  .dif-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 1rem;
+  }
+
+  .dif-text {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    padding-top: 0.15rem;
+  }
+
+  /* SERVIÇOS */
+  #servicos {
+    background: var(--off-white);
+  }
+
+  .servicos-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 4rem;
+  }
+
+  .servicos-header .section-divider {
+    margin: 0 auto 2rem;
+  }
+
+  .servicos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5px;
+    background: var(--silver);
+    border: 1px solid var(--silver);
+  }
+
+  .servico-card {
+    background: var(--white);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.4s var(--transition);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .servico-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.4s var(--transition);
+  }
+
+  .servico-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    z-index: 2;
+    background: var(--white);
+  }
+
+  .servico-card:hover::before { transform: scaleX(1); }
+
+  .servico-icon {
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .servico-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--off-black);
+    margin-bottom: 0.6rem;
+  }
+
+  .servico-desc {
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.7;
+  }
+
+  /* GALERIA */
+  #galeria {
+    background: var(--black);
+    padding-bottom: 5rem;
+  }
+
+  #galeria .section-title { color: var(--white); }
+
+  .galeria-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 280px 280px;
+    gap: 8px;
+  }
+
+  .galeria-item {
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .galeria-item:nth-child(1) {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+
+  .galeria-item img,
+  .galeria-item .gal-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s var(--transition);
+    display: block;
+  }
+
+  .galeria-item .gal-bg {
+    background-position: center;
+    background-size: cover;
+  }
+
+  .galeria-item:hover .gal-bg,
+  .galeria-item:hover img {
+    transform: scale(1.07);
+  }
+
+  .galeria-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.4s;
+  }
+
+  .galeria-item:hover .galeria-overlay {
+    background: rgba(0,0,0,0.25);
+  }
+
+  /* DEPOIMENTOS */
+  #depoimentos {
+    background: var(--dark);
+    overflow: hidden;
+  }
+
+  #depoimentos .section-title { color: var(--white); }
+
+  .dep-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .dep-header .section-divider { margin: 0 auto 2rem; }
+
+  .dep-slider-wrapper {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .dep-slider {
+    display: flex;
+    gap: 1.5rem;
+    transition: transform 0.6s var(--transition);
+  }
+
+  .dep-card {
+    min-width: calc(33.333% - 1rem);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    padding: 2.5rem 2rem;
+    transition: all 0.4s var(--transition);
+    position: relative;
+  }
+
+  .dep-card:hover {
+    border-color: rgba(201,169,110,0.3);
+    background: rgba(255,255,255,0.06);
+  }
+
+  .dep-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  .dep-text {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--light-gray);
+    line-height: 1.85;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .dep-stars {
+    color: var(--gold);
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.15em;
+  }
+
+  .dep-author {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .dep-controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 2.5rem;
+  }
+
+  .dep-dot {
+    width: 30px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .dep-dot.active {
+    background: var(--gold);
+    width: 50px;
+  }
+
+  /* AGENDAMENTO */
+  #agendamento {
+    background: var(--off-white);
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .agend-info h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--off-black);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .agend-info p {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--mid);
+    line-height: 1.9;
+    margin-bottom: 2rem;
+  }
+
+  .agend-detail {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.8rem;
+    color: var(--mid);
+  }
+
+  .agend-detail .icon { color: var(--gold); font-size: 1rem; min-width: 20px; }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .form-group.full { grid-column: span 2; }
+
+  .form-group label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: var(--white);
+    border: 1px solid var(--silver);
+    padding: 0.9rem 1rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem;
+    color: var(--dark);
+    outline: none;
+    transition: border-color 0.3s;
+    border-radius: 0;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+
+  .form-group textarea {
+    resize: none;
+    height: 110px;
+    line-height: 1.6;
+  }
+
+  .btn-whatsapp {
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    padding: 1.1rem 2.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    transition: all 0.4s var(--transition);
+  }
+
+  .btn-whatsapp:hover {
+    background: var(--gold);
+    color: var(--black);
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  }
+
+  /* CONTATO */
+  #contato {
+    background: var(--white);
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .contato-info .contact-item {
+    display: flex;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+  }
+
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border: 1px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    font-size: 0.9rem;
+  }
+
+  .contact-label {
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray);
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .contact-value {
+    font-size: 0.85rem;
+    color: var(--dark);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .horarios {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--off-white);
+    border-left: 2px solid var(--gold);
+  }
+
+  .horarios h4 {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .horario-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--mid);
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .map-container {
+    height: 420px;
+    overflow: hidden;
+    border: 1px solid var(--silver);
+  }
+
+  .map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    filter: grayscale(30%) contrast(1.1);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    padding: 4rem 5% 2rem;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 4rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 2rem;
+  }
+
+  .footer-brand .logo-main {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .footer-brand .logo-sub {
+    font-size: 0.55rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: block;
+    margin-bottom: 1.2rem;
+  }
+
+  .footer-brand p {
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.8;
+  }
+
+  .footer-socials {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+
+  .social-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .social-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .footer-col h5 {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col ul li {
+    margin-bottom: 0.7rem;
+  }
+
+  .footer-col ul li a {
+    font-size: 0.78rem;
+    font-weight: 300;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.3s;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-col ul li a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-bottom p {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.2);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  /* REVEAL ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s var(--transition);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: all 0.9s var(--transition);
+  }
+
+  .reveal-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: all 0.9s var(--transition);
+  }
+
+  .reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* DELAY CLASSES */
+  .d1 { transition-delay: 0.1s; }
+  .d2 { transition-delay: 0.2s; }
+  .d3 { transition-delay: 0.3s; }
+  .d4 { transition-delay: 0.4s; }
+  .d5 { transition-delay: 0.5s; }
+  .d6 { transition-delay: 0.6s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .servicos-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 0 4%; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+
+    #sobre { grid-template-columns: 1fr; gap: 3rem; }
+    .sobre-image { height: 380px; }
+
+    #agendamento { grid-template-columns: 1fr; gap: 3rem; }
+    #contato { grid-template-columns: 1fr; gap: 3rem; }
+
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: span 2; }
+
+    .servicos-grid { grid-template-columns: repeat(2, 1fr); }
+
+    .galeria-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: repeat(3, 220px);
+    }
+    .galeria-item:nth-child(1) { grid-column: span 2; }
+
+    .dep-card { min-width: calc(100% - 1rem); }
+  }
+
+  @media (max-width: 600px) {
+    section { padding: 4rem 6%; }
+    #hero { min-height: 100svh; }
+
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-secondary { width: 240px; text-align: center; }
+
+    .servicos-grid { grid-template-columns: 1fr 1fr; }
+
+    .galeria-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(6, 200px);
+    }
+    .galeria-item:nth-child(1) { grid-column: span 1; }
+
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: span 1; }
+
+    .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+    .footer-brand { grid-column: span 1; }
+
+    .diferenciais { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <span class="main-name">Salão Abstrato Hair</span>
+    <span class="sub-name">Centro de Beleza</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#servicos">Serviços</a></li>
+    <li><a href="#galeria">Galeria</a></li>
+    <li><a href="#depoimentos">Depoimentos</a></li>
+    <li><a href="#contato">Contato</a></li>
+    <li><a href="#agendamento" class="nav-cta">Agendar</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#sobre" onclick="toggleMenu()">Sobre</a>
+  <a href="#servicos" onclick="toggleMenu()">Serviços</a>
+  <a href="#galeria" onclick="toggleMenu()">Galeria</a>
+  <a href="#depoimentos" onclick="toggleMenu()">Depoimentos</a>
+  <a href="#agendamento" onclick="toggleMenu()">Agendamento</a>
+  <a href="#contato" onclick="toggleMenu()">Contato</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Salão Abstrato Hair — Curitiba</p>
+    <h1 class="hero-title">Realce sua beleza com<br><em>estilo e sofisticação</em></h1>
+    <p class="hero-subtitle">Atendimento premium, profissionais especializados e uma experiência única em Curitiba.</p>
+    <div class="hero-buttons">
+      <a href="#agendamento" class="btn-primary">Agendar Horário</a>
+      <a href="#sobre" class="btn-secondary">Conheça o Salão</a>
+    </div>
+  </div>
+  <div class="hero-scroll" onclick="document.getElementById('sobre').scrollIntoView({behavior:'smooth'})">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="sobre-image reveal-left">
+    <div class="sobre-img-main" style="background:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80') center/cover"></div>
+    <div class="sobre-img-accent" style="background:url('https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=600&q=80') center/cover"></div>
+    <div class="sobre-badge">
+      <span class="num">10+</span>
+      <span class="label">Anos de excelência</span>
+    </div>
+  </div>
+
+  <div class="sobre-text reveal-right">
+    <span class="section-eyebrow">Nossa história</span>
+    <h2 class="section-title">Beleza que <em>transforma</em></h2>
+    <div class="section-divider"></div>
+    <p>Há anos oferecendo excelência em beleza e autoestima, o Salão Abstrato Hair Centro de Beleza se destaca pelo atendimento acolhedor, ambiente sofisticado e profissionais altamente qualificados. Nosso objetivo é proporcionar uma experiência única para cada cliente.</p>
+
+    <div class="diferenciais">
+      <div class="diferencial-item d1 reveal">
+        <div class="dif-icon">✦</div>
+        <div class="dif-text">Atendimento personalizado</div>
+      </div>
+      <div class="diferencial-item d2 reveal">
+        <div class="dif-icon">◈</div>
+        <div class="dif-text">Ambiente moderno e aconchegante</div>
+      </div>
+      <div class="diferencial-item d3 reveal">
+        <div class="dif-icon">◎</div>
+        <div class="dif-text">Especialistas em cabelo e manicure</div>
+      </div>
+      <div class="diferencial-item d4 reveal">
+        <div class="dif-icon">❋</div>
+        <div class="dif-text">Espaço acolhedor para todos</div>
+      </div>
+      <div class="diferencial-item d5 reveal">
+        <div class="dif-icon">🏳️‍🌈</div>
+        <div class="dif-text">Empresa LGBTQ+ friendly</div>
+      </div>
+      <div class="diferencial-item d6 reveal">
+        <div class="dif-icon">◇</div>
+        <div class="dif-text">Equipe experiente e atenciosa</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVIÇOS -->
+<section id="servicos">
+  <div class="servicos-header reveal">
+    <span class="section-eyebrow">O que oferecemos</span>
+    <h2 class="section-title">Nossos <em>Serviços</em></h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="servicos-grid">
+    <div class="servico-card reveal d1">
+      <span class="servico-icon">✂</span>
+      <h3 class="servico-name">Corte Feminino</h3>
+      <p class="servico-desc">Cortes precisos e personalizados que valorizam sua beleza natural.</p>
+    </div>
+    <div class="servico-card reveal d2">
+      <span class="servico-icon">✂</span>
+      <h3 class="servico-name">Corte Masculino</h3>
+      <p class="servico-desc">Estilo e precisão para o visual masculino moderno e clássico.</p>
+    </div>
+    <div class="servico-card reveal d3">
+      <span class="servico-icon">◐</span>
+      <h3 class="servico-name">Coloração</h3>
+      <p class="servico-desc">Cores vibrantes e duradouras com produtos de alta qualidade.</p>
+    </div>
+    <div class="servico-card reveal d4">
+      <span class="servico-icon">◑</span>
+      <h3 class="servico-name">Mechas</h3>
+      <p class="servico-desc">Técnicas modernas de iluminação para um visual deslumbrante.</p>
+    </div>
+    <div class="servico-card reveal d1">
+      <span class="servico-icon">〜</span>
+      <h3 class="servico-name">Escova</h3>
+      <p class="servico-desc">Fios sedosos, brilhantes e modelados com perfeição.</p>
+    </div>
+    <div class="servico-card reveal d2">
+      <span class="servico-icon">◎</span>
+      <h3 class="servico-name">Hidratação</h3>
+      <p class="servico-desc">Tratamentos profundos que restauram vida e brilho aos fios.</p>
+    </div>
+    <div class="servico-card reveal d3">
+      <span class="servico-icon">✦</span>
+      <h3 class="servico-name">Manicure</h3>
+      <p class="servico-desc">Cuidado completo para suas mãos com acabamento impecável.</p>
+    </div>
+    <div class="servico-card reveal d4">
+      <span class="servico-icon">❋</span>
+      <h3 class="servico-name">Tratamentos Capilares</h3>
+      <p class="servico-desc">Reconstrução e nutrição profunda para cabelos saudáveis.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA -->
+<section id="galeria">
+  <div class="galeria-header reveal">
+    <span class="section-eyebrow" style="color:var(--gold)">Nosso espaço</span>
+    <h2 class="section-title" style="color:var(--white)">A arte em <em style="color:var(--light-gray)">cada detalhe</em></h2>
+  </div>
+
+  <div class="galeria-grid reveal">
+    <div class="galeria-item">
+      <div class="gal-bg" style="background-image:url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&q=80')"></div>
+      <div class="galeria-overlay"></div>
+    </div>
+    <div class="galeria-item">
+      <div class="gal-bg" style="background-image:url('https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&q=80')"></div>
+      <div class="galeria-overlay"></div>
+    </div>
+    <div class="galeria-item">
+      <div class="gal-bg" style="background-image:url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&q=80')"></div>
+      <div class="galeria-overlay"></div>
+    </div>
+    <div class="galeria-item">
+      <div class="gal-bg" style="background-image:url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80')"></div>
+      <div class="galeria-overlay"></div>
+    </div>
+    <div class="galeria-item">
+      <div class="gal-bg" style="background-image:url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=600&q=80')"></div>
+      <div class="galeria-overlay"></div>
+    </div>
+    <div class="galeria-item">
+      <div class="gal-bg" style="background-image:url('https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=600&q=80')"></div>
+      <div class="galeria-overlay"></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section id="depoimentos">
+  <div class="dep-header reveal">
+    <span class="section-eyebrow">O que dizem</span>
+    <h2 class="section-title">Clientes que <em style="color:var(--light-gray)">confiam em nós</em></h2>
+    <div class="section-divider" style="margin:0 auto 0"></div>
+  </div>
+
+  <div class="dep-slider-wrapper">
+    <div class="dep-slider" id="depSlider">
+      <div class="dep-card">
+        <div class="dep-quote">"</div>
+        <p class="dep-text">Sou cliente há alguns anos, sempre ótimo atendimento, ambiente maravilhoso e profissionais incríveis. Recomendo de olhos fechados!</p>
+        <div class="dep-stars">★★★★★</div>
+        <span class="dep-author">Ana Carolina M.</span>
+      </div>
+      <div class="dep-card">
+        <div class="dep-quote">"</div>
+        <p class="dep-text">O clima é ótimo, equipe super atenciosa e meu cabelo ficou exatamente como eu queria. Lugar especial, voltarei sempre.</p>
+        <div class="dep-stars">★★★★★</div>
+        <span class="dep-author">Fernanda L.</span>
+      </div>
+      <div class="dep-card">
+        <div class="dep-quote">"</div>
+        <p class="dep-text">Profissionais extremamente talentosos, atendimento impecável e ambiente acolhedor. Sem dúvida o melhor salão de Curitiba!</p>
+        <div class="dep-stars">★★★★★</div>
+        <span class="dep-author">Juliana R.</span>
+      </div>
+      <div class="dep-card">
+        <div class="dep-quote">"</div>
+        <p class="dep-text">Me sinto completamente transformada após cada visita. A equipe entende exatamente o que eu quero e entrega com perfeição.</p>
+        <div class="dep-stars">★★★★★</div>
+        <span class="dep-author">Mariana S.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dep-controls" id="depControls"></div>
+</section>
+
+<!-- AGENDAMENTO -->
+<section id="agendamento">
+  <div class="agend-info reveal-left">
+    <span class="section-eyebrow">Reserve seu horário</span>
+    <h3>Agende sua <em style="font-style:italic;font-family:'Cormorant Garamond',serif">visita</em></h3>
+    <p>Entre em contato conosco e agende o seu horário de forma rápida e prática pelo WhatsApp. Estamos prontos para atendê-la.</p>
+
+    <div class="agend-detail">
+      <span class="icon">📍</span>
+      <span>R. Oyapock, 114 — Cristo Rei, Curitiba - PR</span>
+    </div>
+    <div class="agend-detail">
+      <span class="icon">📞</span>
+      <span>(41) 3078-2676</span>
+    </div>
+    <div class="agend-detail">
+      <span class="icon">⏰</span>
+      <span>Seg–Sex: 9h–19h &nbsp;|&nbsp; Sáb: 9h–17h</span>
+    </div>
+  </div>
+
+  <div class="reveal-right">
+    <div class="form-grid" id="agendForm">
+      <div class="form-group">
+        <label>Nome completo</label>
+        <input type="text" id="f-nome" placeholder="Seu nome">
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="tel" id="f-tel" placeholder="(41) 9xxxx-xxxx">
+      </div>
+      <div class="form-group">
+        <label>Serviço desejado</label>
+        <select id="f-servico">
+          <option value="">Selecione...</option>
+          <option>Corte Feminino</option>
+          <option>Corte Masculino</option>
+          <option>Coloração</option>
+          <option>Mechas</option>
+          <option>Escova</option>
+          <option>Hidratação</option>
+          <option>Manicure</option>
+          <option>Tratamentos Capilares</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Data preferida</label>
+        <input type="date" id="f-data">
+      </div>
+      <div class="form-group full">
+        <label>Horário preferido</label>
+        <input type="time" id="f-hora">
+      </div>
+      <div class="form-group full">
+        <label>Mensagem (opcional)</label>
+        <textarea id="f-msg" placeholder="Alguma observação ou dúvida?"></textarea>
+      </div>
+    </div>
+    <button class="btn-whatsapp" onclick="agendarWhatsApp()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      Agendar pelo WhatsApp
+    </button>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section id="contato">
+  <div class="contato-info reveal-left">
+    <span class="section-eyebrow">Onde estamos</span>
+    <h2 class="section-title">Venha nos <em>visitar</em></h2>
+    <div class="section-divider"></div>
+
+    <div class="contact-item">
+      <div class="contact-icon">📍</div>
+      <div>
+        <span class="contact-label">Endereço</span>
+        <span class="contact-value">R. Oyapock, 114 — Cristo Rei<br>Curitiba - PR, 80050-450</span>
+      </div>
+    </div>
+
+    <div class="contact-item">
+      <div class="contact-icon">☎</div>
+      <div>
+        <span class="contact-label">Telefone</span>
+        <span class="contact-value">(41) 3078-2676</span>
+      </div>
+    </div>
+
+    <div class="contact-item">
+      <div class="contact-icon">📸</div>
+      <div>
+        <span class="contact-label">Instagram</span>
+        <span class="contact-value">@salaoabstratohair</span>
+      </div>
+    </div>
+
+    <div class="horarios">
+      <h4>Horário de Funcionamento</h4>
+      <div class="horario-row"><span>Segunda — Sexta</span><span>09:00 — 19:00</span></div>
+      <div class="horario-row"><span>Sábado</span><span>09:00 — 17:00</span></div>
+      <div class="horario-row"><span>Domingo</span><span>Fechado</span></div>
+    </div>
+  </div>
+
+  <div class="map-container reveal-right">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.892428498432!2d-49.26185508498195!3d-25.411699983842!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce4015e10a4d3%3A0x0!2sR.+Oyapock%2C+114+-+Cristo+Rei%2C+Curitiba+-+PR%2C+80050-450!5e0!3m2!1spt-BR!2sbr!4v1699999999999!5m2!1spt-BR!2sbr"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="Localização Salão Abstrato Hair">
+    </iframe>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <span class="logo-main">Salão Abstrato Hair</span>
+      <span class="logo-sub">Centro de Beleza · Curitiba</span>
+      <p>Excelência em beleza, autoestima e cuidado. Um espaço pensado para que você se sinta única.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn" title="Instagram">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://wa.me/554130782676" class="social-btn" title="WhatsApp">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Navegação</h5>
+      <ul>
+        <li><a href="#sobre">Sobre o Salão</a></li>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#galeria">Galeria</a></li>
+        <li><a href="#depoimentos">Depoimentos</a></li>
+        <li><a href="#agendamento">Agendamento</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Serviços</h5>
+      <ul>
+        <li><a href="#servicos">Corte Feminino</a></li>
+        <li><a href="#servicos">Corte Masculino</a></li>
+        <li><a href="#servicos">Coloração</a></li>
+        <li><a href="#servicos">Mechas</a></li>
+        <li><a href="#servicos">Manicure</a></li>
+        <li><a href="#servicos">Hidratação</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 Salão Abstrato Hair Centro de Beleza. Todos os direitos reservados.</p>
+    <p>Curitiba - PR</p>
+  </div>
+</footer>
+
+<script>
+  // NAVBAR SCROLL
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // MOBILE MENU
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('active');
+  }
+
+  // SCROLL REVEAL
+  const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealElements.forEach(el => observer.observe(el));
+
+  // DEPOIMENTOS SLIDER
+  const slider = document.getElementById('depSlider');
+  const cards = slider.querySelectorAll('.dep-card');
+  const controls = document.getElementById('depControls');
+  let current = 0;
+  let perView = 3;
+  let maxSlides;
+  let autoInterval;
+
+  function getPerView() {
+    if (window.innerWidth <= 600) return 1;
+    if (window.innerWidth <= 900) return 1;
+    return 3;
+  }
+
+  function setupSlider() {
+    perView = getPerView();
+    maxSlides = Math.max(0, cards.length - perView);
+    controls.innerHTML = '';
+    const totalDots = maxSlides + 1;
+    for (let i = 0; i < totalDots; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dep-dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      controls.appendChild(dot);
+    }
+    goTo(0);
+  }
+
+  function goTo(idx) {
+    current = Math.min(Math.max(idx, 0), maxSlides);
+    const cardWidth = cards[0].offsetWidth + 24;
+    slider.style.transform = `translateX(-${current * cardWidth}px)`;
+    controls.querySelectorAll('.dep-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  function next() { goTo(current >= maxSlides ? 0 : current + 1); }
+
+  function startAuto() {
+    autoInterval = setInterval(next, 5000);
+  }
+
+  slider.addEventListener('mouseenter', () => clearInterval(autoInterval));
+  slider.addEventListener('mouseleave', startAuto);
+
+  window.addEventListener('resize', setupSlider);
+  setupSlider();
+  startAuto();
+
+  // WHATSAPP INTEGRATION
+  function agendarWhatsApp() {
+    const nome = document.getElementById('f-nome').value.trim();
+    const tel = document.getElementById('f-tel').value.trim();
+    const servico = document.getElementById('f-servico').value;
+    const data = document.getElementById('f-data').value;
+    const hora = document.getElementById('f-hora').value;
+    const msg = document.getElementById('f-msg').value.trim();
+
+    if (!nome || !servico) {
+      alert('Por favor, preencha seu nome e o serviço desejado.');
+      return;
+    }
+
+    const dataFormatada = data
+      ? new Date(data + 'T00:00:00').toLocaleDateString('pt-BR')
+      : 'A combinar';
+
+    const horaFormatada = hora || 'A combinar';
+
+    let texto = `Olá! Gostaria de agendar um horário no Salão Abstrato Hair! 😊\n\n`;
+    texto += `*Nome:* ${nome}\n`;
+    if (tel) texto += `*Telefone:* ${tel}\n`;
+    texto += `*Serviço:* ${servico}\n`;
+    texto += `*Data:* ${dataFormatada}\n`;
+    texto += `*Horário:* ${horaFormatada}\n`;
+    if (msg) texto += `\n*Observação:* ${msg}`;
+    texto += `\n\nAguardo confirmação!`;
+
+    const numero = '554130782676';
+    const url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
+    window.open(url, '_blank');
+  }
+</script>
+</body>
+</html>
