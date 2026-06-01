@@ -191,8 +191,8 @@
     inset: 0;
     background: 
       linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.8) 100%),
-      url('https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1920&q=80') center/cover no-repeat;
-    transform: scale(1.05);
+      url('./imagens/salao-abstrato-hero.jpg') center/cover no-repeat;
+    transform: scale(1);
     animation: heroZoom 12s ease-out forwards;
   }
 
@@ -1592,34 +1592,4 @@
     const nome = document.getElementById('f-nome').value.trim();
     const tel = document.getElementById('f-tel').value.trim();
     const servico = document.getElementById('f-servico').value;
-    const data = document.getElementById('f-data').value;
-    const hora = document.getElementById('f-hora').value;
-    const msg = document.getElementById('f-msg').value.trim();
-
-    if (!nome || !servico) {
-      alert('Por favor, preencha seu nome e o serviço desejado.');
-      return;
-    }
-
-    const dataFormatada = data
-      ? new Date(data + 'T00:00:00').toLocaleDateString('pt-BR')
-      : 'A combinar';
-
-    const horaFormatada = hora || 'A combinar';
-
-    let texto = `Olá! Gostaria de agendar um horário no Salão Abstrato Hair! 😊\n\n`;
-    texto += `*Nome:* ${nome}\n`;
-    if (tel) texto += `*Telefone:* ${tel}\n`;
-    texto += `*Serviço:* ${servico}\n`;
-    texto += `*Data:* ${dataFormatada}\n`;
-    texto += `*Horário:* ${horaFormatada}\n`;
-    if (msg) texto += `\n*Observação:* ${msg}`;
-    texto += `\n\nAguardo confirmação!`;
-
-    const numero = '554130782676';
-    const url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_blank');
-  }
-</script>
-</body>
-</html>
+    const data = document.getElementById('f-data')
