@@ -64,25 +64,14 @@
 
   .nav-logo {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     line-height: 1;
   }
 
-  .nav-logo .main-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.35rem;
-    font-weight: 500;
-    color: var(--white);
-    letter-spacing: 0.08em;
-  }
-
-  .nav-logo .sub-name {
-    font-size: 0.55rem;
-    font-weight: 400;
-    color: var(--gold);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-top: 2px;
+  .nav-logo .logo-img {
+    height: 42px;
+    width: auto;
+    display: block;
   }
 
   .nav-links {
@@ -943,21 +932,9 @@
     margin-bottom: 2rem;
   }
 
-  .footer-brand .logo-main {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem;
-    font-weight: 400;
-    color: var(--white);
-    letter-spacing: 0.08em;
-    display: block;
-    margin-bottom: 0.3rem;
-  }
-
-  .footer-brand .logo-sub {
-    font-size: 0.55rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--gold);
+  .footer-brand .footer-logo-img {
+    height: 50px;
+    width: auto;
     display: block;
     margin-bottom: 1.2rem;
   }
@@ -1113,6 +1090,8 @@
     .hero-buttons { flex-direction: column; align-items: center; }
     .btn-primary, .btn-secondary { width: 240px; text-align: center; }
 
+    .nav-logo .logo-img { height: 34px; }
+
     .servicos-grid { grid-template-columns: 1fr 1fr; }
 
     .galeria-grid {
@@ -1136,8 +1115,7 @@
 <!-- NAVBAR -->
 <nav id="navbar">
   <div class="nav-logo">
-    <span class="main-name">Salão Abstrato Hair</span>
-    <span class="sub-name">Centro de Beleza</span>
+    <img src="./imagens/logoabstratosite.png" alt="Abstrato Centro de Beleza" class="logo-img">
   </div>
   <ul class="nav-links">
     <li><a href="#sobre">Sobre</a></li>
@@ -1478,8 +1456,7 @@
 <footer>
   <div class="footer-top">
     <div class="footer-brand">
-      <span class="logo-main">Salão Abstrato Hair</span>
-      <span class="logo-sub">Centro de Beleza · Curitiba</span>
+      <img src="./imagens/logoabstratosite.png" alt="Abstrato Centro de Beleza" class="footer-logo-img">
       <p>Excelência em beleza, autoestima e cuidado. Um espaço pensado para que você se sinta única.</p>
       <div class="footer-socials">
         <a href="#" class="social-btn" title="Instagram">
