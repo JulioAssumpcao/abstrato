@@ -323,11 +323,13 @@
   }
   .lead-overlay.active{ display:flex; }
   .lead-card{
+    position:relative;
     width:100%; max-width:400px; background:#151210;
     border:1px solid var(--gold); border-radius:18px;
     padding:32px 26px 28px; text-align:center;
     color:#f4ecdd; font-family:'Poppins',sans-serif;
   }
+  .lead-close-btn{ position:absolute; top:8px; right:8px; }
   .lead-card .trophy{ font-size:36px; margin-bottom:8px; }
   .lead-card h3{
     font-family:'Playfair Display',serif; color:var(--gold-light);
@@ -596,6 +598,7 @@
 
 <div class="lead-overlay" id="leadOverlay">
   <div class="lead-card">
+    <button class="close-btn lead-close-btn" id="leadCloseBtn" aria-label="Fechar" type="button">&times;</button>
     <div class="trophy">🎉</div>
     <h3>Parabéns! Você ganhou:</h3>
     <div class="lead-prize-label" id="leadPrizeLabel"></div>
@@ -608,6 +611,7 @@
     <button class="lead-submit" id="leadSubmit">Resgatar meu prêmio 🎁</button>
     <div class="lead-error" id="leadError">Preencha todos os campos corretamente.</div>
   </div>
+</div>
 
 <!-- Botão flutuante para reabrir a roleta -->
 <button id="reopen-roleta" onclick="document.getElementById('overlay').classList.remove('hidden')" title="Girar a roleta de prêmios" style="
@@ -788,12 +792,16 @@
     };
 
     try{
+      const controller = new AbortController();
+      const timeoutId = setTimeout(()=> controller.abort(), 4000);
       await fetch(SUPABASE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: controller.signal
       });
-    } catch(e){ console.warn('Supabase error', e); }
+      clearTimeout(timeoutId);
+    } catch(e){ console.warn('Supabase error/timeout', e); }
 
     /* Redireciona pro WhatsApp */
     const msg = `Olá, tudo bem? Acabei de girar a roleta e ganhei ${currentPrize ? currentPrize.label : 'um prêmio'}`;
@@ -803,8 +811,22 @@
   spinBtn.addEventListener('click', spin);
   closeBtn.addEventListener('click', ()=> overlay.classList.add('hidden'));
   document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape') overlay.classList.add('hidden');
+    if(e.key === 'Escape'){
+      overlay.classList.add('hidden');
+      leadOv.classList.remove('active');
+    }
   });
+
+  // fecha clicando fora do modal (roleta)
+  overlay.addEventListener('click', (e)=>{
+    if(e.target === overlay) overlay.classList.add('hidden');
+  });
+
+  // fecha clicando fora do card (form de lead) ou no X
+  leadOv.addEventListener('click', (e)=>{
+    if(e.target === leadOv) leadOv.classList.remove('active');
+  });
+  document.getElementById('leadCloseBtn').addEventListener('click', ()=> leadOv.classList.remove('active'));
 
 
   /* Auto-open da roleta */
