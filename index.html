@@ -185,6 +185,164 @@
   @media(max-width:900px){nav{padding:0 4%}.nav-links{display:none}.hamburger{display:flex}#sobre{grid-template-columns:1fr;gap:3rem}.sobre-image{height:380px}#agendamento{grid-template-columns:1fr;gap:3rem}#contato{grid-template-columns:1fr;gap:3rem}.footer-top{grid-template-columns:1fr 1fr}.footer-brand{grid-column:span 2}.servicos-grid{grid-template-columns:repeat(2,1fr)}.galeria-grid{grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,220px)}.galeria-item:nth-child(1){grid-column:span 2}.dep-card{min-width:calc(100% - 1rem)}}
   @media(max-width:600px){section{padding:4rem 6%}#hero{min-height:100svh}.hero-buttons{flex-direction:column;align-items:center}.btn-primary,.btn-secondary{width:240px;text-align:center}.nav-logo .logo-img{height:34px}.servicos-grid{grid-template-columns:1fr 1fr}.galeria-grid{grid-template-columns:1fr;grid-template-rows:repeat(6,200px)}.galeria-item:nth-child(1){grid-column:span 1}.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:span 1}.footer-top{grid-template-columns:1fr;gap:2rem}.footer-brand{grid-column:span 1}.diferenciais{grid-template-columns:1fr}}
 
+  /* ══════════════════════════════════════════════
+     ROLETA DE PRÊMIOS — POPUP
+  ══════════════════════════════════════════════ */
+  .wheel-overlay{
+    position:fixed; inset:0; z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(80,60,30,.35), transparent 45%),
+      radial-gradient(circle at 80% 75%, rgba(60,45,20,.30), transparent 50%),
+      linear-gradient(160deg, #0d0b09 0%, #17130f 45%, #100e0b 100%);
+    overflow-y:auto;
+  }
+  .wheel-overlay.hidden{ display:none; }
+
+  .wheel-modal{
+    position:relative;
+    width:100%; max-width:400px;
+    max-height:92vh; overflow-y:auto;
+    padding:22px 20px 20px;
+    text-align:center;
+    border-radius:18px;
+    background:#151210;
+    border:1px solid rgba(205,162,86,.35);
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+  }
+  .wheel-modal::-webkit-scrollbar{ width:4px; }
+  .wheel-modal::-webkit-scrollbar-thumb{ background:#cda256; border-radius:2px; }
+
+  .close-btn{
+    position:absolute; top:8px; right:8px;
+    width:38px; height:38px; border-radius:50%;
+    border:1.5px solid #cda256;
+    background:transparent; color:#cda256;
+    font-size:20px; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition: background .2s ease;
+  }
+  .close-btn:hover{ background:rgba(205,162,86,.15); }
+
+  .brand-tagline{
+    font-size:10px; letter-spacing:3px; color:#cda256;
+    margin-top:4px; font-weight:600;
+  }
+  .headline{ margin-top:14px; }
+  .headline-sub{
+    font-family:'Cormorant Garamond',serif; font-weight:500;
+    font-size:16px; color:#f4ecdd; margin-bottom:2px;
+  }
+  .headline-main{
+    font-family:'Cormorant Garamond',serif; font-weight:700;
+    font-size:clamp(22px,5.5vw,30px); letter-spacing:1px;
+    background:linear-gradient(180deg,#f3d795,#8a6a2f);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    margin:0;
+  }
+  .headline-desc{
+    font-size:12px; color:#d8cfc0; margin-top:6px; font-weight:300;
+  }
+
+  .wheel-wrap{
+    position:relative; width:min(55vw,240px); aspect-ratio:1;
+    margin:20px auto 18px;
+  }
+  #wheelImg{
+    width:100%; height:100%;
+    display:block;
+    border-radius:50%;
+    transform-origin: center center;
+    /* 15 segundos de giro */
+    transition: transform 15s cubic-bezier(.14,.68,.15,1);
+    will-change: transform;
+  }
+  .pointer{
+    position:absolute; top:-4px; left:50%; transform:translateX(-50%);
+    width:34px; height:44px; z-index:5;
+    filter:drop-shadow(0 3px 3px rgba(0,0,0,.5));
+  }
+  .hub{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:18%; height:18%; border-radius:50%;
+    background:radial-gradient(circle at 40% 32%, #2c2620, #0a0806 78%);
+    border:3px solid #cda256;
+    box-shadow: 0 0 0 2px rgba(0,0,0,.4), 0 6px 14px rgba(0,0,0,.55);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    cursor:pointer; color:#f3d795;
+    font-family:'Cormorant Garamond',serif;
+    z-index:6; user-select:none;
+    transition: transform .15s ease;
+  }
+  .hub:hover{ transform:translate(-50%,-50%) scale(1.06); }
+  .hub:active{ transform:translate(-50%,-50%) scale(.97); }
+  .hub[aria-disabled="true"]{ cursor:not-allowed; opacity:.65; }
+  .hub-main{ font-size:clamp(10px,2.8vw,15px); font-weight:700; letter-spacing:1px; }
+  .hub-sub{ font-size:clamp(6px,1.3vw,8px); letter-spacing:2px; margin-top:1px; }
+
+  .footer-pill{
+    display:flex; align-items:center; gap:10px;
+    background:#141110; border:1px solid rgba(205,162,86,.35);
+    border-radius:999px; padding:10px 16px;
+    max-width:100%; margin:0 auto;
+    text-align:left;
+  }
+  .footer-pill svg{ flex:none; width:18px; height:18px; color:#cda256; }
+  .footer-pill span{ font-size:12px; color:#efe6d6; font-weight:300; }
+
+  /* Lead form */
+  .lead-overlay{
+    position:fixed; inset:0; z-index:10000;
+    display:none; align-items:center; justify-content:center;
+    background:rgba(5,4,3,.80); padding:20px;
+  }
+  .lead-overlay.active{ display:flex; }
+  .lead-card{
+    position:relative;
+    width:100%; max-width:400px; background:#151210;
+    border:1px solid #cda256; border-radius:18px;
+    padding:32px 26px 28px; text-align:center;
+    color:#f4ecdd; font-family:'Montserrat',sans-serif;
+  }
+  .lead-close-btn{ position:absolute; top:8px; right:8px; }
+  .lead-card .trophy{ font-size:36px; margin-bottom:8px; }
+  .lead-card h3{
+    font-family:'Cormorant Garamond',serif; color:#f3d795;
+    font-size:22px; margin:0 0 6px;
+  }
+  .lead-prize-label{
+    font-size:15px; font-weight:600; color:#cda256;
+    background:rgba(205,162,86,.12); border:1px solid rgba(205,162,86,.3);
+    border-radius:8px; padding:8px 14px; margin-bottom:20px;
+    display:inline-block; line-height:1.4;
+  }
+  .lead-subtitle{
+    font-size:12.5px; color:#b0a898; margin-bottom:18px; font-weight:300;
+  }
+  .lead-field{
+    width:100%; padding:11px 14px; border-radius:9px;
+    background:#0d0b09; border:1px solid rgba(205,162,86,.35);
+    color:#f4ecdd; font-size:14px; font-family:'Montserrat',sans-serif;
+    margin-bottom:11px; outline:none; transition:border-color .2s;
+  }
+  .lead-field:focus{ border-color:#cda256; }
+  .lead-field::placeholder{ color:#6b5e4e; }
+  .lead-submit{
+    width:100%; padding:13px; border-radius:10px; border:none;
+    background:linear-gradient(135deg,#cda256,#8a6a2f);
+    color:#181410; font-weight:700; font-size:14.5px;
+    cursor:pointer; letter-spacing:.5px;
+    transition:opacity .2s, transform .1s;
+    margin-top:4px;
+  }
+  .lead-submit:hover{ opacity:.9; }
+  .lead-submit:active{ transform:scale(.98); }
+  .lead-submit:disabled{ opacity:.55; cursor:not-allowed; }
+  .lead-error{ font-size:12px; color:#e07070; margin-top:8px; display:none; }
+  .lead-error.show{ display:block; }
+
+  @media (prefers-reduced-motion: reduce){ #wheelImg{ transition-duration:.3s; } }
 </style>
 </head>
 <body>
@@ -371,6 +529,245 @@
   </div>
 </footer>
 
+<!-- ══════ ROLETA POPUP ══════ -->
+<div class="wheel-overlay hidden" id="overlay">
+  <div class="wheel-modal">
+    <button class="close-btn" id="closeBtn" aria-label="Fechar">&times;</button>
+
+    <img src="./imagens/logoabstratosite.png" alt="Abstrato Centro de Beleza" style="width:min(50%,150px);height:auto;display:block;margin:0 auto;" />
+
+    <div class="headline">
+      <div class="headline-sub">Gire a roleta e</div>
+      <div class="headline-main">GANHE PRÊMIOS</div>
+      <div class="headline-desc">Descontos e procedimentos exclusivos para você!</div>
+    </div>
+
+    <div class="wheel-wrap">
+      <svg class="pointer" viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 48 C8 34 4 26 4 17 A16 16 0 0 1 36 17 C36 26 32 34 20 48 Z" fill="#cda256" stroke="#8a6a2f" stroke-width="1.5"/>
+        <circle cx="20" cy="17" r="6" fill="#1B1712"/>
+      </svg>
+      <img id="wheelImg" src="https://raw.githubusercontent.com/JulioAssumpcao/abstrato/main/imagens/70ac3809-00dd-4866-b62e-f607ffb32da7.png" alt="Roleta de prêmios Abstrato Hair" draggable="false"/>
+      <button class="hub" id="spinBtn" type="button">
+        <span class="hub-main">GIRAR</span>
+        <span class="hub-sub">A SORTE</span>
+      </button>
+    </div>
+
+    <div class="footer-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="8" width="18" height="13" rx="1.5"/>
+        <path d="M3 12h18"/><path d="M12 8v13"/>
+        <path d="M12 8c-1.7 0-4-1-4-3a2 2 0 0 1 4 0 2 2 0 0 1 4 0c0 2-2.3 3-4 3Z"/>
+      </svg>
+      <span>Basta girar a roleta para descobrir seu prêmio especial!</span>
+    </div>
+  </div>
+</div>
+
+<!-- Lead form -->
+<div class="lead-overlay" id="leadOverlay">
+  <div class="lead-card">
+    <button class="close-btn lead-close-btn" id="leadCloseBtn" aria-label="Fechar" type="button">&times;</button>
+    <div class="trophy">🎉</div>
+    <h3>Parabéns! Você ganhou:</h3>
+    <div class="lead-prize-label" id="leadPrizeLabel"></div>
+    <div class="lead-subtitle">Preencha seus dados para resgatar o prêmio</div>
+    <input class="lead-field" id="leadNome"     type="text" placeholder="Seu nome completo" required />
+    <input class="lead-field" id="leadWhatsapp" type="tel"  placeholder="WhatsApp (com DDD)" required />
+    <input class="lead-field" id="leadCpf"      type="text" placeholder="CPF (000.000.000-00)" required />
+    <button class="lead-submit" id="leadSubmit">Resgatar meu prêmio 🎁</button>
+    <div class="lead-error" id="leadError">Preencha todos os campos corretamente.</div>
+  </div>
+</div>
+
+<!-- Botão flutuante para reabrir -->
+<button id="reopen-roleta" title="Girar a roleta de prêmios" style="
+  position:fixed; bottom:24px; left:24px; z-index:9998;
+  width:58px; height:58px; border-radius:50%;
+  background:linear-gradient(135deg,#cda256,#8a6a2f);
+  border:none; cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  display:flex; align-items:center; justify-content:center;
+  font-size:26px; transition:transform .2s;
+" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"
+   onclick="document.getElementById('overlay').classList.remove('hidden')">🎁</button>
+
+<!-- Supabase JS via CDN (ESM) -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  /* ── CONFIG ── */
+  const SUPABASE_PROJECT_URL = 'https://jnajaysxoqkkdhwygmxz.supabase.co';
+  const SUPABASE_ANON_KEY    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpuYWpheXN4b3Fra2Rod3lnbXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMzMwMjIsImV4cCI6MjA4NDcwOTAyMn0.uqWcP9sh1dQ9K3TqbhIIwfSbXDPNK0c5GyRhoTv6VuQ'; // ← cole aqui a chave anon public
+  const CRM_ENDPOINT         = 'https://jnajaysxoqkkdhwygmxz.functions.supabase.co/lead-intake/33735fe05a3292e252fac84386ee7939';
+  const WHATSAPP_NUM         = '5541992081670';
+
+  const supabase = createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_KEY);
+
+  /* ── PRÊMIOS (mesma ordem dos segmentos da imagem) ── */
+  const prizes = [
+    { label: "3% de desconto em qualquer procedimento", weight: 6  },
+    { label: "Hidratação com Ozônio Grátis",             weight: 19 },
+    { label: "Buço na Cera Grátis",                      weight: 19 },
+    { label: "Secado + Lavado Grátis",                   weight: 19 },
+    { label: "Design de Sobrancelha Grátis",             weight: 19 },
+    { label: "Axila na Cera Grátis",                     weight: 18 },
+  ];
+
+  const wheelImg   = document.getElementById('wheelImg');
+  const spinBtn    = document.getElementById('spinBtn');
+  const overlay    = document.getElementById('overlay');
+  const closeBtn   = document.getElementById('closeBtn');
+  const leadOv     = document.getElementById('leadOverlay');
+  const leadPrize  = document.getElementById('leadPrizeLabel');
+  const leadNome   = document.getElementById('leadNome');
+  const leadWpp    = document.getElementById('leadWhatsapp');
+  const leadCpf    = document.getElementById('leadCpf');
+  const leadSubmit = document.getElementById('leadSubmit');
+  const leadError  = document.getElementById('leadError');
+
+  let spinning = false;
+  let currentRotation = 0;
+  let alreadyPlayed = false;
+  let currentPrize = null;
+
+  /* ── Máscaras ── */
+  leadWpp.addEventListener('input', () => {
+    let v = leadWpp.value.replace(/\D/g,'');
+    if(v.length > 11) v = v.slice(0,11);
+    if(v.length > 6)      v = '('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7);
+    else if(v.length > 2) v = '('+v.slice(0,2)+') '+v.slice(2);
+    else if(v.length > 0) v = '('+v;
+    leadWpp.value = v;
+  });
+  leadCpf.addEventListener('input', () => {
+    let v = leadCpf.value.replace(/\D/g,'');
+    if(v.length > 11) v = v.slice(0,11);
+    if(v.length > 9)      v = v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9);
+    else if(v.length > 6) v = v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6);
+    else if(v.length > 3) v = v.slice(0,3)+'.'+v.slice(3);
+    leadCpf.value = v;
+  });
+
+  /* ── Sorteio ponderado ── */
+  function pickPrizeIndex() {
+    const total = prizes.reduce((s,p) => s+p.weight, 0);
+    let r = Math.random() * total;
+    for(let i=0; i<prizes.length; i++){
+      if(r < prizes[i].weight) return i;
+      r -= prizes[i].weight;
+    }
+    return prizes.length - 1;
+  }
+
+  /* ── Girar — 15 segundos ── */
+  function spin() {
+    if(spinning || alreadyPlayed) return;
+    spinning = true;
+    spinBtn.setAttribute('aria-disabled','true');
+
+    const idx = pickPrizeIndex();
+    const segAngle = 360 / prizes.length;
+    const targetCenter = idx * segAngle;
+    const extraSpins = 6 * 360;                          // 6 voltas completas
+    const jitter = (Math.random() - 0.5) * (segAngle * 0.6);
+    currentRotation += extraSpins - targetCenter + jitter;
+    wheelImg.style.transform = `rotate(${currentRotation}deg)`;
+
+    // 15 300 ms = duração da animação CSS (15s) + 300ms de margem
+    setTimeout(() => {
+      spinning = false;
+      alreadyPlayed = true;
+      currentPrize = prizes[idx];
+      showLeadForm(currentPrize);
+    }, 15300);
+  }
+
+  function showLeadForm(prize) {
+    leadPrize.textContent = prize.label;
+    leadOv.classList.add('active');
+  }
+
+  /* ── Submit do formulário de lead ── */
+  leadSubmit.addEventListener('click', async () => {
+    const nome = leadNome.value.trim();
+    const wpp  = leadWpp.value.trim();
+    const cpf  = leadCpf.value.trim();
+
+    if(!nome || wpp.length < 14 || cpf.length < 14){
+      leadError.textContent = 'Preencha todos os campos corretamente.';
+      leadError.classList.add('show');
+      return;
+    }
+    leadError.classList.remove('show');
+    leadSubmit.disabled = true;
+    leadSubmit.textContent = 'Verificando...';
+
+    /* 1) Checa se CPF já resgatou nesse mês via RPC do Supabase */
+    const { data: liberado, error: rpcErr } = await supabase.rpc('verificar_e_registrar_resgate', {
+      p_cpf:      cpf.replace(/\D/g,''),
+      p_nome:     nome,
+      p_telefone: wpp.replace(/\D/g,''),
+      p_premio:   currentPrize ? currentPrize.label : ''
+    });
+
+    if(rpcErr || liberado === false){
+      leadSubmit.disabled = false;
+      leadSubmit.textContent = 'Resgatar meu prêmio 🎁';
+      leadError.textContent = 'Esse CPF já resgatou um prêmio este mês. Volte no próximo mês! 😊';
+      leadError.classList.add('show');
+      return;
+    }
+
+    /* 2) Primeira vez nesse mês → envia pro CRM normalmente */
+    try {
+      const ctrl = new AbortController();
+      const tid  = setTimeout(() => ctrl.abort(), 4000);
+      await fetch(CRM_ENDPOINT, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome,
+          telefone:  wpp.replace(/\D/g,''),
+          cpf:       cpf.replace(/\D/g,''),
+          interesse: currentPrize ? currentPrize.label : '',
+          email: '', _hp: ''
+        }),
+        signal: ctrl.signal
+      });
+      clearTimeout(tid);
+    } catch(e){ console.warn('CRM error', e); }
+
+    /* 3) Redireciona pro WhatsApp */
+    const msg = `Olá! Acabei de girar a roleta do Salão Abstrato e ganhei: ${currentPrize ? currentPrize.label : 'um prêmio'}. Gostaria de resgatar! 🎁`;
+    window.location.href = `https://wa.me/${WHATSAPP_NUM}?text=${encodeURIComponent(msg)}`;
+  });
+
+  /* ── Controles da roleta ── */
+  spinBtn.addEventListener('click', spin);
+  closeBtn.addEventListener('click', () => overlay.classList.add('hidden'));
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.add('hidden'); });
+  leadOv.addEventListener('click',  (e) => { if(e.target === leadOv)  leadOv.classList.remove('active'); });
+  document.getElementById('leadCloseBtn').addEventListener('click', () => leadOv.classList.remove('active'));
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      overlay.classList.add('hidden');
+      leadOv.classList.remove('active');
+    }
+  });
+
+  /* ── Auto-open após 4s (apenas 1x por sessão) ── */
+  (function(){
+    if(!sessionStorage.getItem('roleta_shown')){
+      setTimeout(() => {
+        overlay.classList.remove('hidden');
+        sessionStorage.setItem('roleta_shown','1');
+      }, 4000);
+    }
+  })();
+</script>
+
+<!-- Script geral do site (não-module) -->
 <script>
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); });
@@ -379,51 +776,51 @@
 
   const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
   }, { threshold: 0.12 });
   revealElements.forEach(el => observer.observe(el));
 
-  const slider = document.getElementById('depSlider');
-  const cards = slider.querySelectorAll('.dep-card');
+  const slider   = document.getElementById('depSlider');
+  const cards    = slider.querySelectorAll('.dep-card');
   const controls = document.getElementById('depControls');
-  let current = 0; let perView = 3; let maxSlides; let autoInterval;
-  function getPerView() { return window.innerWidth <= 900 ? 1 : 3; }
-  function setupSlider() {
+  let current = 0, perView = 3, maxSlides, autoInterval;
+  function getPerView(){ return window.innerWidth <= 900 ? 1 : 3; }
+  function setupSlider(){
     perView = getPerView(); maxSlides = Math.max(0, cards.length - perView);
     controls.innerHTML = '';
-    for (let i = 0; i <= maxSlides; i++) {
+    for(let i=0; i<=maxSlides; i++){
       const dot = document.createElement('div');
-      dot.className = 'dep-dot' + (i === 0 ? ' active' : '');
-      dot.addEventListener('click', () => goTo(i)); controls.appendChild(dot);
+      dot.className = 'dep-dot'+(i===0?' active':'');
+      dot.addEventListener('click', () => goTo(i));
+      controls.appendChild(dot);
     }
     goTo(0);
   }
-  function goTo(idx) {
-    current = Math.min(Math.max(idx, 0), maxSlides);
-    const cardWidth = cards[0].offsetWidth + 24;
-    slider.style.transform = `translateX(-${current * cardWidth}px)`;
-    controls.querySelectorAll('.dep-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+  function goTo(idx){
+    current = Math.min(Math.max(idx,0), maxSlides);
+    slider.style.transform = `translateX(-${current*(cards[0].offsetWidth+24)}px)`;
+    controls.querySelectorAll('.dep-dot').forEach((d,i) => d.classList.toggle('active', i===current));
   }
-  function next() { goTo(current >= maxSlides ? 0 : current + 1); }
-  function startAuto() { autoInterval = setInterval(next, 5000); }
+  function next(){ goTo(current >= maxSlides ? 0 : current+1); }
+  function startAuto(){ autoInterval = setInterval(next, 5000); }
   slider.addEventListener('mouseenter', () => clearInterval(autoInterval));
   slider.addEventListener('mouseleave', startAuto);
   window.addEventListener('resize', setupSlider);
   setupSlider(); startAuto();
 
-  function agendarWhatsApp() {
-    const nome = document.getElementById('f-nome').value.trim();
-    const tel = document.getElementById('f-tel').value.trim();
+  function agendarWhatsApp(){
+    const nome    = document.getElementById('f-nome').value.trim();
+    const tel     = document.getElementById('f-tel').value.trim();
     const servico = document.getElementById('f-servico').value;
-    const data = document.getElementById('f-data').value;
-    const hora = document.getElementById('f-hora').value;
-    const msg = document.getElementById('f-msg').value.trim();
-    if (!nome || !servico) { alert('Por favor, preencha seu nome e o serviço desejado.'); return; }
-    const dataFormatada = data ? new Date(data + 'T00:00:00').toLocaleDateString('pt-BR') : 'A combinar';
+    const data    = document.getElementById('f-data').value;
+    const hora    = document.getElementById('f-hora').value;
+    const msg     = document.getElementById('f-msg').value.trim();
+    if(!nome || !servico){ alert('Por favor, preencha seu nome e o serviço desejado.'); return; }
+    const dataFmt = data ? new Date(data+'T00:00:00').toLocaleDateString('pt-BR') : 'A combinar';
     let texto = `Olá, tudo bem? Vim do site e gostaria de agendar com vocês.\n\n*Nome:* ${nome}\n`;
-    if (tel) texto += `*Telefone:* ${tel}\n`;
-    texto += `*Serviço desejado:* ${servico}\n*Data preferida:* ${dataFormatada}\n*Horário preferido:* ${hora || 'A combinar'}`;
-    if (msg) texto += `\n\n*Mensagem:* ${msg}`;
+    if(tel) texto += `*Telefone:* ${tel}\n`;
+    texto += `*Serviço desejado:* ${servico}\n*Data preferida:* ${dataFmt}\n*Horário preferido:* ${hora||'A combinar'}`;
+    if(msg) texto += `\n\n*Mensagem:* ${msg}`;
     texto += '\n\nAguardo a confirmação.';
     window.open(`https://api.whatsapp.com/send?phone=5541992081670&text=${encodeURIComponent(texto)}`, '_blank');
   }
