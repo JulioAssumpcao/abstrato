@@ -254,8 +254,8 @@
     display:block;
     border-radius:50%;
     transform-origin: center center;
-    /* 20 segundos de giro */
-    transition: transform 20s cubic-bezier(.14,.68,.15,1);
+    /* 15 segundos de giro, desaceleração distribuída ao longo de toda a animação */
+    transition: transform 15s cubic-bezier(0.32, 0.94, 0.60, 1);
     will-change: transform;
   }
   .pointer{
@@ -629,6 +629,9 @@
   const leadSubmit = document.getElementById('leadSubmit');
   const leadError  = document.getElementById('leadError');
 
+  /* Duração real do giro (precisa bater com o "transition: transform Xs" do CSS acima) */
+  const SPIN_DURATION_MS = 15000;
+
   let spinning = false;
   let currentRotation = 0;
   let alreadyPlayed = false;
@@ -663,7 +666,7 @@
     return prizes.length - 1;
   }
 
-  /* ── Girar — 20 segundos, 20 voltas ── */
+  /* ── Girar — dura SPIN_DURATION_MS, com giro visível até o fim ── */
   function spin() {
     if(spinning || alreadyPlayed) return;
     spinning = true;
@@ -672,11 +675,12 @@
     const idx = pickPrizeIndex();
     const segAngle = 360 / prizes.length;
     const targetCenter = idx * segAngle;
-    const extraSpins = 20 * 360;                         // 20 voltas completas
+    const extraSpins = 14 * 360;                         // 14 voltas completas, distribuídas ao longo dos 15s
     const jitter = (Math.random() - 0.5) * (segAngle * 0.6);
     currentRotation += extraSpins - targetCenter + jitter;
     wheelImg.style.transform = `rotate(${currentRotation}deg)`;
 
+    /* Abre o resultado assim que a roleta visualmente para (sem espera extra) */
     setTimeout(() => {
       spinning = false;
       currentPrize = prizes[idx];
@@ -692,14 +696,14 @@
         // Reativa a transição no próximo frame
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            wheelImg.style.transition = 'transform 20s cubic-bezier(.14,.68,.15,1)';
+            wheelImg.style.transition = `transform ${SPIN_DURATION_MS/1000}s cubic-bezier(0.32, 0.94, 0.60, 1)`;
           });
         });
       } else {
         alreadyPlayed = true;
         showLeadForm(currentPrize);
       }
-    }, 20100);
+    }, SPIN_DURATION_MS);
   }
 
   function showLeadForm(prize) {
