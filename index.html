@@ -254,8 +254,8 @@
     display:block;
     border-radius:50%;
     transform-origin: center center;
-    /* 15 segundos de giro, desaceleração distribuída ao longo de toda a animação */
-    transition: transform 15s cubic-bezier(0.32, 0.94, 0.60, 1);
+    /* A duração/curva reais são setadas dinamicamente pelo JS (giro em 2 fases). Este valor é só um fallback. */
+    transition: transform 12s linear;
     will-change: transform;
   }
   .pointer{
@@ -342,7 +342,7 @@
   .lead-error{ font-size:12px; color:#e07070; margin-top:8px; display:none; }
   .lead-error.show{ display:block; }
 
-  @media (prefers-reduced-motion: reduce){ #wheelImg{ transition-duration:.3s; } }
+  /* prefers-reduced-motion é tratado no JS (giro único curto de 0.6s via transitionend) */
 </style>
 </head>
 <body>
@@ -629,8 +629,15 @@
   const leadSubmit = document.getElementById('leadSubmit');
   const leadError  = document.getElementById('leadError');
 
-  /* Duração real do giro (precisa bater com o "transition: transform Xs" do CSS acima) */
-  const SPIN_DURATION_MS = 15000;
+  /* Fase 1: giro rápido e constante (linear) — sempre visivelmente girando.
+     Fase 2: desaceleração curta até travar exatamente no prêmio sorteado.
+     O formulário abre no evento "transitionend" da fase 2, não em um timer —
+     ou seja, o navegador avisa no exato instante em que a roleta parou de verdade. */
+  const SPIN_PHASE1_MS   = 12000;  // giro rápido linear
+  const SPIN_PHASE2_MS   = 3000;   // freada final
+  const PHASE1_TURNS     = 9;      // voltas soltas na fase 1
+  const PHASE2_TURNS     = 4;      // voltas + ajuste fino na fase 2 (freada)
+  const prefersReduced   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let spinning = false;
   let currentRotation = 0;
@@ -666,44 +673,66 @@
     return prizes.length - 1;
   }
 
-  /* ── Girar — dura SPIN_DURATION_MS, com giro visível até o fim ── */
+  /* ── Girar ── */
   function spin() {
     if(spinning || alreadyPlayed) return;
     spinning = true;
     spinBtn.setAttribute('aria-disabled','true');
 
     const idx = pickPrizeIndex();
+    currentPrize = prizes[idx];
     const segAngle = 360 / prizes.length;
     const targetCenter = idx * segAngle;
-    const extraSpins = 14 * 360;                         // 14 voltas completas, distribuídas ao longo dos 15s
     const jitter = (Math.random() - 0.5) * (segAngle * 0.6);
-    currentRotation += extraSpins - targetCenter + jitter;
-    wheelImg.style.transform = `rotate(${currentRotation}deg)`;
 
-    /* Abre o resultado assim que a roleta visualmente para (sem espera extra) */
-    setTimeout(() => {
-      spinning = false;
-      currentPrize = prizes[idx];
+    /* Quem pediu "menos movimento" no sistema: giro curto, mas ainda via transitionend */
+    if(prefersReduced){
+      const finalRotation = currentRotation + 360 - targetCenter + jitter;
+      currentRotation = finalRotation;
+      wheelImg.style.transition = 'transform 0.6s ease-out';
+      wheelImg.style.transform = `rotate(${finalRotation}deg)`;
+      wheelImg.addEventListener('transitionend', onSpinFinished, { once:true });
+      return;
+    }
 
-      if(currentPrize.label === 'Tente Outra Vez'){
-        // Libera girar de novo sem mostrar o formulário
-        alreadyPlayed = false;
-        spinBtn.removeAttribute('aria-disabled');
-        // Reseta rotação acumulada para evitar números enormes
-        currentRotation = currentRotation % 360;
-        wheelImg.style.transition = 'none';
-        wheelImg.style.transform = `rotate(${currentRotation}deg)`;
-        // Reativa a transição no próximo frame
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            wheelImg.style.transition = `transform ${SPIN_DURATION_MS/1000}s cubic-bezier(0.32, 0.94, 0.60, 1)`;
-          });
-        });
-      } else {
-        alreadyPlayed = true;
-        showLeadForm(currentPrize);
-      }
-    }, SPIN_DURATION_MS);
+    /* FASE 1 — giro rápido e constante (linear), claramente visível */
+    const phase1Rotation = currentRotation + PHASE1_TURNS * 360;
+    wheelImg.style.transition = `transform ${SPIN_PHASE1_MS/1000}s linear`;
+    wheelImg.style.transform = `rotate(${phase1Rotation}deg)`;
+
+    function onPhase1End(e){
+      if(e.propertyName !== 'transform') return;
+      wheelImg.removeEventListener('transitionend', onPhase1End);
+
+      /* FASE 2 — freada curta, terminando exatamente no prêmio sorteado */
+      const phase2Rotation = phase1Rotation + PHASE2_TURNS * 360 - targetCenter + jitter;
+      currentRotation = phase2Rotation;
+      wheelImg.style.transition = `transform ${SPIN_PHASE2_MS/1000}s cubic-bezier(0.22, 0.61, 0.36, 1)`;
+      wheelImg.style.transform = `rotate(${phase2Rotation}deg)`;
+
+      wheelImg.addEventListener('transitionend', onSpinFinished, { once:true });
+    }
+    wheelImg.addEventListener('transitionend', onPhase1End);
+  }
+
+  /* Disparado pelo navegador no instante exato em que a roleta termina de girar — 0 delay */
+  function onSpinFinished(e){
+    if(e.propertyName !== 'transform') return;
+    spinning = false;
+
+    if(currentPrize.label === 'Tente Outra Vez'){
+      // Libera girar de novo sem mostrar o formulário
+      alreadyPlayed = false;
+      spinBtn.removeAttribute('aria-disabled');
+      // Reseta rotação acumulada para evitar números enormes, sem animar o "salto" de volta
+      currentRotation = currentRotation % 360;
+      wheelImg.style.transition = 'none';
+      wheelImg.style.transform = `rotate(${currentRotation}deg)`;
+      void wheelImg.offsetHeight; // força o navegador a aplicar o reset antes do próximo giro
+    } else {
+      alreadyPlayed = true;
+      showLeadForm(currentPrize);
+    }
   }
 
   function showLeadForm(prize) {
